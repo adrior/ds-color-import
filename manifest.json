@@ -1,0 +1,14 @@
+{
+  "name": "DS Variables Importer",
+  "id": "ds-vars-importer",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "This plugin doesn't require network access"
+  }
+}

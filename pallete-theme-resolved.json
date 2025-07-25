@@ -1,0 +1,20 @@
+{
+  "light": {
+    "foreground": "#000000",
+    "background": "#d3d5db",
+    "hover": "#EBECEE",
+    "selection": "#f5f8fe",
+    "selection_foreground": "#ebecf0",
+    "selection_background": "#f5f8fe",
+    "border": "#000000"
+  },
+  "dark": {
+    "foreground": "#dfe1e5",
+    "background": "#1e1f22",
+    "hover": "#232427",
+    "selection": "#2e436e",
+    "selection_foreground": "#ced0d6",
+    "selection_background": "#2e436e",
+    "border": "#515764"
+  }
+}

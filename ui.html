@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>DS Variables Importer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        margin: 0;
+        padding: 16px;
+        background: #f8f9fa;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      h1 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 16px 0;
+        color: #333;
+      }
+
+      .upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 24px;
+        text-align: center;
+        background: white;
+        margin-bottom: 16px;
+        transition: border-color 0.2s ease;
+      }
+
+      .upload-area:hover {
+        border-color: #007aff;
+      }
+
+      .upload-area.dragover {
+        border-color: #007aff;
+        background: #f0f8ff;
+      }
+
+      .upload-icon {
+        font-size: 24px;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      .upload-text {
+        color: #666;
+        margin-bottom: 12px;
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .upload-btn {
+        background: #007aff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s ease;
+      }
+
+      .upload-btn:hover {
+        background: #0056cc;
+      }
+
+      .preview-area {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: none;
+      }
+
+      .preview-title {
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #333;
+      }
+
+      .file-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+      }
+
+      .file-name {
+        font-weight: 500;
+      }
+
+      .theme-preview {
+        margin-bottom: 12px;
+      }
+
+      .theme-title {
+        font-weight: 500;
+        margin-bottom: 8px;
+        text-transform: capitalize;
+      }
+
+      .color-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+      }
+
+      .color-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+
+      .color-swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        margin-right: 8px;
+        border: 1px solid #ddd;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background: #007aff;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #0056cc;
+      }
+
+      .btn-secondary {
+        background: #f8f9fa;
+        color: #666;
+        border: 1px solid #ddd;
+      }
+
+      .btn-secondary:hover {
+        background: #e9ecef;
+      }
+
+      .message {
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        display: none;
+      }
+
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>DS Variables Importer</h1>
+
+      <div class="message" id="message"></div>
+
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📁</div>
+        <div class="upload-text">
+          Перетащите JSON файл сюда или нажмите для выбора
+        </div>
+        <button
+          class="upload-btn"
+          onclick="document.getElementById('fileInput').click()"
+        >
+          Выбрать файл
+        </button>
+        <input type="file" id="fileInput" class="file-input" accept=".json" />
+      </div>
+
+      <div class="preview-area" id="previewArea">
+        <div class="preview-title">Предварительный просмотр</div>
+        <div class="file-info">
+          <span class="file-name" id="fileName"></span>
+          <span id="variableCount"></span>
+        </div>
+        <div class="file-info">
+          <span>📁 Коллекция:</span>
+          <span id="targetCollection"
+            >Переменные будут добавлены в существующую коллекцию</span
+          >
+        </div>
+        <div id="themePreviews"></div>
+      </div>
+
+      <div class="loading" id="loading">Импортируем переменные...</div>
+
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="closePlugin()">
+          Закрыть
+        </button>
+        <button
+          class="btn btn-primary"
+          id="importBtn"
+          onclick="importVariables()"
+          disabled
+        >
+          Импортировать переменные
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let currentData = null;
+      let currentFileName = null;
+
+      // Элементы DOM
+      const uploadArea = document.getElementById("uploadArea");
+      const fileInput = document.getElementById("fileInput");
+      const previewArea = document.getElementById("previewArea");
+      const message = document.getElementById("message");
+      const importBtn = document.getElementById("importBtn");
+      const loading = document.getElementById("loading");
+
+      // Обработка drag & drop
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFile(files[0]);
+        }
+      });
+
+      // Обработка выбора файла
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          handleFile(e.target.files[0]);
+        }
+      });
+
+      // Функция обработки файла
+      function handleFile(file) {
+        if (!file.name.endsWith(".json")) {
+          showMessage("Пожалуйста, выберите JSON файл", "error");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const jsonData = JSON.parse(e.target.result);
+            currentData = jsonData;
+            currentFileName = file.name.replace(".json", "");
+            showPreview(jsonData, currentFileName);
+            hideMessage();
+          } catch (error) {
+            showMessage(
+              "Ошибка при чтении JSON файла: " + error.message,
+              "error"
+            );
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // Функция показа предварительного просмотра
+      function showPreview(data, fileName) {
+        document.getElementById("fileName").textContent = fileName;
+
+        const themes = Object.keys(data);
+        const colorCount =
+          themes.length > 0 ? Object.keys(data[themes[0]]).length : 0;
+        document.getElementById(
+          "variableCount"
+        ).textContent = `${colorCount} переменных, ${themes.length} тем`;
+
+        const previewsContainer = document.getElementById("themePreviews");
+        previewsContainer.innerHTML = "";
+
+        themes.forEach((themeName) => {
+          const themeDiv = document.createElement("div");
+          themeDiv.className = "theme-preview";
+
+          const themeTitle = document.createElement("div");
+          themeTitle.className = "theme-title";
+          themeTitle.textContent = themeName;
+          themeDiv.appendChild(themeTitle);
+
+          const colorGrid = document.createElement("div");
+          colorGrid.className = "color-grid";
+
+          Object.entries(data[themeName]).forEach(([colorName, colorValue]) => {
+            const colorItem = document.createElement("div");
+            colorItem.className = "color-item";
+
+            const swatch = document.createElement("div");
+            swatch.className = "color-swatch";
+            swatch.style.backgroundColor = colorValue;
+
+            const label = document.createElement("span");
+            label.textContent = colorName;
+
+            colorItem.appendChild(swatch);
+            colorItem.appendChild(label);
+            colorGrid.appendChild(colorItem);
+          });
+
+          themeDiv.appendChild(colorGrid);
+          previewsContainer.appendChild(themeDiv);
+        });
+
+        previewArea.style.display = "block";
+        importBtn.disabled = false;
+      }
+
+      // Функция импорта переменных
+      function importVariables() {
+        if (!currentData || !currentFileName) return;
+
+        loading.style.display = "block";
+        importBtn.disabled = true;
+
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "import-variables",
+              fileName: currentFileName,
+              jsonData: currentData,
+            },
+          },
+          "*"
+        );
+      }
+
+      // Функция закрытия плагина
+      function closePlugin() {
+        parent.postMessage(
+          {
+            pluginMessage: { type: "close-plugin" },
+          },
+          "*"
+        );
+      }
+
+      // Функция показа сообщений
+      function showMessage(text, type) {
+        message.textContent = text;
+        message.className = `message ${type}`;
+        message.style.display = "block";
+      }
+
+      // Функция скрытия сообщений
+      function hideMessage() {
+        message.style.display = "none";
+      }
+
+      // Запрашиваем информацию о коллекциях при загрузке
+      parent.postMessage(
+        {
+          pluginMessage: { type: "get-collections-info" },
+        },
+        "*"
+      );
+
+      // Обработка сообщений от основного кода плагина
+      window.onmessage = (event) => {
+        const {
+          type,
+          message: msg,
+          targetCollectionName,
+        } = event.data.pluginMessage;
+
+        if (type === "collections-info") {
+          document.getElementById("targetCollection").textContent =
+            targetCollectionName;
+        } else if (type === "import-success") {
+          loading.style.display = "none";
+          importBtn.disabled = false;
+          showMessage(msg, "success");
+        } else if (type === "import-error") {
+          loading.style.display = "none";
+          importBtn.disabled = false;
+          showMessage(msg, "error");
+        }
+      };
+    </script>
+  </body>
+</html>

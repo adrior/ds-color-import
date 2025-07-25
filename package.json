@@ -1,0 +1,38 @@
+{
+  "name": "ds-vars-importer",
+  "version": "1.0.0",
+  "description": "Figma plugin for importing design system color variables from JSON files with multi-theme support",
+  "main": "code.js",
+  "scripts": {
+    "build": "echo 'No build step required for this plugin'",
+    "dev": "echo 'Load the plugin in Figma using Plugins → Development → Import plugin from manifest'",
+    "lint": "echo 'No linting configured'"
+  },
+  "keywords": [
+    "figma",
+    "plugin",
+    "design-system",
+    "colors",
+    "variables",
+    "theme",
+    "import",
+    "json"
+  ],
+  "author": "DS Variables Importer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/ds-vars-importer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/ds-vars-importer/issues"
+  },
+  "homepage": "https://github.com/your-username/ds-vars-importer#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "figma": {
+    "id": "ds-vars-importer",
+    "name": "DS Variables Importer"
+  }
+}
