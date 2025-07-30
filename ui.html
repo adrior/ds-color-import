@@ -256,6 +256,42 @@
       let currentData = null;
       let currentFileName = null;
 
+      // Функция для очистки имени переменной от недопустимых символов
+      function sanitizeVariableName(name) {
+        return name
+          .replace(/[^a-zA-Z0-9\/\-_\s]/g, "") // Удаляем недопустимые символы
+          .replace(/\s+/g, "-") // Заменяем пробелы на дефисы
+          .replace(/^[0-9]/, "var-$&") // Добавляем префикс если начинается с цифры
+          .trim();
+      }
+
+      // Рекурсивная функция для извлечения всех цветов из вложенной структуры
+      function extractColors(obj, prefix = "") {
+        const colors = {};
+
+        for (const [key, value] of Object.entries(obj)) {
+          const sanitizedKey = sanitizeVariableName(key);
+          const currentPath = prefix
+            ? `${prefix}/${sanitizedKey}`
+            : sanitizedKey;
+
+          if (typeof value === "string" && value.startsWith("#")) {
+            // Это цвет
+            colors[currentPath] = value;
+          } else if (
+            typeof value === "object" &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
+            // Это вложенный объект, продолжаем рекурсию
+            const nestedColors = extractColors(value, currentPath);
+            Object.assign(colors, nestedColors);
+          }
+        }
+
+        return colors;
+      }
+
       // Элементы DOM
       const uploadArea = document.getElementById("uploadArea");
       const fileInput = document.getElementById("fileInput");
@@ -320,8 +356,17 @@
         document.getElementById("fileName").textContent = fileName;
 
         const themes = Object.keys(data);
-        const colorCount =
-          themes.length > 0 ? Object.keys(data[themes[0]]).length : 0;
+
+        // Подсчитываем общее количество уникальных переменных (включая вложенные)
+        const allColorPaths = new Set();
+        themes.forEach((theme) => {
+          const extractedColors = extractColors(data[theme]);
+          Object.keys(extractedColors).forEach((path) =>
+            allColorPaths.add(path)
+          );
+        });
+
+        const colorCount = allColorPaths.size;
         document.getElementById(
           "variableCount"
         ).textContent = `${colorCount} переменных, ${themes.length} тем`;
@@ -341,7 +386,10 @@
           const colorGrid = document.createElement("div");
           colorGrid.className = "color-grid";
 
-          Object.entries(data[themeName]).forEach(([colorName, colorValue]) => {
+          // Извлекаем все цвета из темы с поддержкой вложенности
+          const extractedColors = extractColors(data[themeName]);
+
+          Object.entries(extractedColors).forEach(([colorPath, colorValue]) => {
             const colorItem = document.createElement("div");
             colorItem.className = "color-item";
 
@@ -350,7 +398,7 @@
             swatch.style.backgroundColor = colorValue;
 
             const label = document.createElement("span");
-            label.textContent = colorName;
+            label.textContent = colorPath;
 
             colorItem.appendChild(swatch);
             colorItem.appendChild(label);

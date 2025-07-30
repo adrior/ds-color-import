@@ -1,0 +1,30 @@
+{
+  "light": {
+    "primary color": "#007AFF",
+    "2ndary-color": "#5856D6",
+    "text@color": "#000000",
+    "bg#color": "#FFFFFF",
+    "border!color": "#DEE2E6",
+    "special$chars": "#FF0000",
+    "100%opacity": "#00FF00",
+    "nested spaces": {
+      "inner color": "#FF00FF",
+      "another@weird#name": "#00FFFF",
+      "3rd level": "#FFFF00"
+    }
+  },
+  "dark": {
+    "primary color": "#0A84FF",
+    "2ndary-color": "#5E5CE6",
+    "text@color": "#FFFFFF",
+    "bg#color": "#000000",
+    "border!color": "#48484A",
+    "special$chars": "#FF453A",
+    "100%opacity": "#30D158",
+    "nested spaces": {
+      "inner color": "#FF69B4",
+      "another@weird#name": "#40E0D0",
+      "3rd level": "#FFD700"
+    }
+  }
+}

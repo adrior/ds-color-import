@@ -29,9 +29,54 @@ function hexToRgb(hex) {
   };
 }
 
+// Функция для очистки имени переменной от недопустимых символов
+function sanitizeVariableName(name) {
+  return name
+    .replace(/[^a-zA-Z0-9\/\-_\s]/g, "") // Удаляем недопустимые символы
+    .replace(/\s+/g, "-") // Заменяем пробелы на дефисы
+    .replace(/^[0-9]/, "var-$&") // Добавляем префикс если начинается с цифры
+    .trim();
+}
+
+// Рекурсивная функция для извлечения всех цветов из вложенной структуры
+function extractColors(obj, prefix = "") {
+  const colors = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    const sanitizedKey = sanitizeVariableName(key);
+    const currentPath = prefix ? `${prefix}/${sanitizedKey}` : sanitizedKey;
+
+    if (typeof value === "string" && value.startsWith("#")) {
+      // Это цвет
+      colors[currentPath] = value;
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !Array.isArray(value)
+    ) {
+      // Это вложенный объект, продолжаем рекурсию
+      const nestedColors = extractColors(value, currentPath);
+      Object.assign(colors, nestedColors);
+    }
+  }
+
+  return colors;
+}
+
 // Функция для создания переменной цвета
 async function createColorVariable(collection, name, colorValues) {
   try {
+    // Проверяем валидность входных данных
+    if (!collection) {
+      throw new Error("Collection is required");
+    }
+    if (!name || typeof name !== "string") {
+      throw new Error("Valid variable name is required");
+    }
+    if (!colorValues || Object.keys(colorValues).length === 0) {
+      throw new Error("Color values are required");
+    }
+
     // Проверяем, существует ли уже переменная с таким именем
     const existingVariables = figma.variables.getLocalVariables();
     const existingVar = existingVariables.find(
@@ -46,7 +91,28 @@ async function createColorVariable(collection, name, colorValues) {
     }
 
     // Устанавливаем значения для каждого режима (light/dark)
-    const modes = collection.modes;
+    let modes = collection.modes;
+
+    // Проверяем что у коллекции есть режимы
+    if (!modes || modes.length === 0) {
+      throw new Error("Collection must have at least one mode");
+    }
+    const themeNames = Object.keys(colorValues);
+
+    // Если это коллекция с только стандартным режимом "Mode 1",
+    // переименовываем его в первую тему
+    if (
+      modes.length === 1 &&
+      modes[0].name === "Mode 1" &&
+      themeNames.length > 0
+    ) {
+      try {
+        collection.renameMode(modes[0].modeId, themeNames[0]);
+        modes = collection.modes; // Обновляем список режимов
+      } catch (error) {
+        console.error(`Error renaming mode:`, error);
+      }
+    }
 
     for (const [themeName, colorValue] of Object.entries(colorValues)) {
       let mode = modes.find(
@@ -54,12 +120,40 @@ async function createColorVariable(collection, name, colorValues) {
       );
 
       if (!mode) {
-        // Создаем новый режим если его нет
-        mode = collection.addMode(themeName);
+        try {
+          // Создаем новый режим если его нет
+          const newModeId = collection.addMode(themeName);
+          // Обновляем список режимов после добавления нового
+          modes = collection.modes;
+          mode = modes.find((m) => m.modeId === newModeId);
+
+          if (!mode) {
+            console.error(`Failed to create or find mode: ${themeName}`);
+            continue;
+          }
+        } catch (error) {
+          console.error(`Error creating mode ${themeName}:`, error);
+          continue;
+        }
       }
 
-      const rgbColor = hexToRgb(colorValue);
-      variable.setValueForMode(mode.modeId, rgbColor);
+      // Проверяем что mode и modeId существуют
+      if (!mode || !mode.modeId) {
+        console.error(`Invalid mode for theme ${themeName}:`, mode);
+        continue;
+      }
+
+      try {
+        const rgbColor = hexToRgb(colorValue);
+        variable.setValueForMode(mode.modeId, rgbColor);
+      } catch (error) {
+        console.error(`Error setting value for mode ${themeName}:`, error);
+        console.error(`Mode details:`, {
+          modeId: mode.modeId,
+          colorValue,
+          rgbColor: hexToRgb(colorValue),
+        });
+      }
     }
 
     return variable;
@@ -90,26 +184,35 @@ figma.ui.onmessage = async (msg) => {
       // Получаем существующую коллекцию или создаем новую
       const collection = await getTargetVariableCollection();
 
-      // Получаем все цветовые свойства из первой темы для определения структуры
+      // Получаем все темы и извлекаем цвета из каждой
       const themes = Object.keys(jsonData);
       if (themes.length === 0) {
         throw new Error("No themes found in JSON data");
       }
 
-      const firstTheme = jsonData[themes[0]];
-      const colorProperties = Object.keys(firstTheme);
+      // Извлекаем все цвета из каждой темы с поддержкой вложенности
+      const allColorPaths = new Set();
+      const themeColors = {};
+
+      for (const theme of themes) {
+        const extractedColors = extractColors(jsonData[theme]);
+        themeColors[theme] = extractedColors;
+
+        // Собираем все уникальные пути цветов
+        Object.keys(extractedColors).forEach((path) => allColorPaths.add(path));
+      }
 
       let createdCount = 0;
       let updatedCount = 0;
 
-      // Создаем переменные для каждого цветового свойства
-      for (const colorProp of colorProperties) {
+      // Создаем переменные для каждого пути цвета
+      for (const colorPath of allColorPaths) {
         const colorValues = {};
 
         // Собираем значения цвета для всех тем
         for (const theme of themes) {
-          if (jsonData[theme][colorProp]) {
-            colorValues[theme] = jsonData[theme][colorProp];
+          if (themeColors[theme][colorPath]) {
+            colorValues[theme] = themeColors[theme][colorPath];
           }
         }
 
@@ -117,10 +220,10 @@ figma.ui.onmessage = async (msg) => {
           const existingVariables = figma.variables.getLocalVariables();
           const exists = existingVariables.some(
             (v) =>
-              v.name === colorProp && v.variableCollectionId === collection.id
+              v.name === colorPath && v.variableCollectionId === collection.id
           );
 
-          await createColorVariable(collection, colorProp, colorValues);
+          await createColorVariable(collection, colorPath, colorValues);
 
           if (exists) {
             updatedCount++;

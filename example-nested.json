@@ -1,0 +1,72 @@
+{
+  "light": {
+    "primary": {
+      "main": "#007AFF",
+      "hover": "#0056CC",
+      "pressed": "#003D99",
+      "disabled": "#B3D9FF"
+    },
+    "secondary": {
+      "main": "#5856D6",
+      "hover": "#4A44B8",
+      "pressed": "#3C329A"
+    },
+    "text": {
+      "primary": "#000000",
+      "secondary": "#666666",
+      "disabled": "#CCCCCC",
+      "inverse": "#FFFFFF"
+    },
+    "background": {
+      "primary": "#FFFFFF",
+      "secondary": "#F8F9FA",
+      "tertiary": "#E9ECEF"
+    },
+    "border": {
+      "primary": "#DEE2E6",
+      "secondary": "#CED4DA",
+      "focus": "#007AFF"
+    },
+    "status": {
+      "success": "#28A745",
+      "warning": "#FFC107",
+      "error": "#DC3545",
+      "info": "#17A2B8"
+    }
+  },
+  "dark": {
+    "primary": {
+      "main": "#0A84FF",
+      "hover": "#409CFF",
+      "pressed": "#70B8FF",
+      "disabled": "#4A5568"
+    },
+    "secondary": {
+      "main": "#5E5CE6",
+      "hover": "#7B79EA",
+      "pressed": "#9896EE"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#AAAAAA",
+      "disabled": "#555555",
+      "inverse": "#000000"
+    },
+    "background": {
+      "primary": "#000000",
+      "secondary": "#1C1C1E",
+      "tertiary": "#2C2C2E"
+    },
+    "border": {
+      "primary": "#48484A",
+      "secondary": "#636366",
+      "focus": "#0A84FF"
+    },
+    "status": {
+      "success": "#30D158",
+      "warning": "#FF9F0A",
+      "error": "#FF453A",
+      "info": "#40C8E0"
+    }
+  }
+}

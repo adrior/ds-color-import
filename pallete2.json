@@ -1,0 +1,207 @@
+{
+  "light": {
+    "background": {
+      "primary": "#ffffff",
+      "secondary": "#f7f8fa",
+      "dark": "#27282e",
+      "current_line": "#f5f8fe"
+    },
+    "foreground": {
+      "primary": "#000000",
+      "secondary": "#818594",
+      "disabled": "#a8adbd",
+      "status_bar": "#6c707e"
+    },
+    "border": {
+      "primary": "#ebecf0",
+      "secondary": "#dfe1e5"
+    },
+    "selection": {
+      "active": "#d4e2ff",
+      "inactive": "#dfe1e5"
+    },
+    "button": {
+      "primary": {
+        "default": "#3574f0",
+        "hovered": "#3369d6",
+        "pressed": "#315fbd"
+      },
+      "success": {
+        "default": "#208a3c",
+        "hovered": "#1f8039",
+        "pressed": "#1f7536"
+      },
+      "danger": {
+        "default": "#db3b4b",
+        "hovered": "#cc3645",
+        "pressed": "#bc303e"
+      }
+    },
+    "link": {
+      "default": "#315fbd"
+    },
+    "icons": {
+      "stroke": "#6c707e",
+      "fill": "#ebecf0"
+    },
+    "status": {
+      "success": {
+        "background": "#c5e5cc",
+        "text": "#208a3c"
+      },
+      "warning": {
+        "background": "#fee6b1",
+        "text": "#a46704"
+      },
+      "error": {
+        "background": "#fad4d8",
+        "text": "#db3b4b"
+      },
+      "info": {
+        "background": "#f5f8fe",
+        "text": "#3574f0"
+      }
+    },
+    "diff": {
+      "added": {
+        "fill": "#f2fcf3",
+        "stroke": "#c5e5cc",
+        "word": "#c5e5cc",
+        "stripe": "#89c398"
+      },
+      "changed": {
+        "fill": "#edf3ff",
+        "stroke": "#c2d6fc",
+        "word": "#c2d6fc",
+        "stripe": "#88adf7"
+      },
+      "removed": {
+        "fill": "#f7f8fa",
+        "stroke": "#d3d5db",
+        "word": "#d3d5db",
+        "stripe": "#a8adbd"
+      },
+      "conflict": {
+        "fill": "#fff2f3",
+        "stripe": "#f2b6bb"
+      }
+    },
+    "file_colors": {
+      "green": "#e3f7e7",
+      "blue": "#daf4f5",
+      "violet": "#f5edff",
+      "orange": "#ffefe3",
+      "yellow": "#fff5db",
+      "rose": "#ffebec"
+    },
+    "banner": {
+      "fill": "#f2fcf3",
+      "stroke": "#fed277"
+    }
+  },
+  "dark": {
+    "background": {
+      "primary": "#1e1f22",
+      "secondary": "#2b2d30",
+      "dark": "#1e1f22",
+      "current_line": "#2b2d30"
+    },
+    "foreground": {
+      "primary": "#dfe1e5",
+      "secondary": "#6f737a",
+      "disabled": "#6f737a",
+      "status_bar": "#868a91",
+      "current_line_number": "#9da0a8"
+    },
+    "border": {
+      "primary": "#393b40",
+      "secondary": "#43454a"
+    },
+    "selection": {
+      "active": "#2e436e",
+      "inactive": "#43454a",
+      "tree_hover": "#393b40"
+    },
+    "button": {
+      "primary": {
+        "default": "#3574f0",
+        "hovered": "#366acf",
+        "pressed": "#375fad"
+      },
+      "success": {
+        "default": "#5fad65",
+        "hovered": "#57965c",
+        "pressed": "#4e8052"
+      },
+      "danger": {
+        "default": "#db5c5c",
+        "hovered": "#bd5757",
+        "pressed": "#9c4e4e"
+      }
+    },
+    "link": {
+      "default": "#6b9bfa"
+    },
+    "icons": {
+      "stroke": "#ced0d6",
+      "fill": "#43454a"
+    },
+    "status": {
+      "success": {
+        "background": "#253627",
+        "text": "#5fad65"
+      },
+      "warning": {
+        "background": "#3d3223",
+        "text": "#f2c55c"
+      },
+      "error": {
+        "background": "#5e3838",
+        "text": "#db5c5c"
+      },
+      "info": {
+        "background": "#25324d",
+        "text": "#548af7"
+      }
+    },
+    "diff": {
+      "added": {
+        "fill": "#253627",
+        "stroke": "#57965c",
+        "word": "#57965c",
+        "stripe": "#73bd79"
+      },
+      "changed": {
+        "fill": "#25324d",
+        "stroke": "#548af7",
+        "word": "#548af7",
+        "stripe": "#83acfc"
+      },
+      "removed": {
+        "fill": "#2b2d30",
+        "stroke": "#6f737a",
+        "word": "#6f737a",
+        "stripe": "#868a91"
+      },
+      "conflict": {
+        "fill": "#402929",
+        "stripe": "#e37774"
+      }
+    },
+    "file_colors": {
+      "green": "#273828",
+      "blue": "#1d3d3b",
+      "violet": "#3b3147",
+      "orange": "#45322b",
+      "yellow": "#3d3223",
+      "rose": "#472b2b"
+    },
+    "banner": {
+      "fill": "#253627",
+      "stroke": "#d6ae58"
+    },
+    "badge": {
+      "text": "#d1e0ff"
+    }
+  }
+}

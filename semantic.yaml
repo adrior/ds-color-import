@@ -1,0 +1,22 @@
+primitives:
+  background:
+    primary: light.gray.14
+    secondary: light.gray.13
+    inverse: light.gray.2
+    current_line: light.blue.13
+  foreground:
+    primary: light.gray.1
+    secondary: light.gray.7
+    disabled: light.gray.8
+    status_bar: light.gray.6
+    inverse: light.gray.1
+  border:
+    primary: light.gray.12
+    secondary: light.gray.11
+    control: light.gray.9
+  accent:
+    action: light.blue.4
+    success: light.green.4
+    warning: light.yellow.4
+    error: light.red.4
+    info: light.blue.4
